@@ -178,3 +178,29 @@ This project uses ESLint for linting. That is configured in `.eslintrc.js`.
 ### Formatting
 
 We use [Prettier](https://prettier.io/) for auto-formatting in this project. It's recommended to install an editor plugin (like the [VSCode Prettier plugin](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)) to get auto-formatting on save. There's also a `npm run format` script you can run to format all files in the project.
+
+# 数据来源
+
+## imdb
+
+### api
+
+限制最多 8 个
+
+#### all
+
+url: `https://v3.sg.media-imdb.com/suggestion/x/{key_words}.json`
+
+#### names
+
+url: `https://v3.sg.media-imdb.com/suggestion/names/x/{key_words}.json`
+
+#### titles
+
+url: `https://v3.sg.media-imdb.com/suggestion/titles/x/{key_words}.json`
+
+### file
+
+url: `https://datasets.imdbws.com/`
+
+数据说明: `https://www.imdb.com/interfaces/`

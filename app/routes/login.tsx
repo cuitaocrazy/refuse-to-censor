@@ -1,42 +1,43 @@
-import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node"
-import { json, redirect } from "@remix-run/node"
-import { Form, Link, useActionData, useSearchParams } from "@remix-run/react"
-import * as React from "react"
+import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node'
+import { json, redirect } from '@remix-run/node'
+import { Form, Link, useActionData, useSearchParams } from '@remix-run/react'
+import clsx from 'clsx'
+import * as React from 'react'
 
-import { createUserSession, getUserId } from "~/session.server"
-import { verifyLogin } from "~/models/user.server"
-import { safeRedirect, validateEmail } from "~/utils"
+import { verifyLogin } from '~/models/user.server'
+import { createUserSession, getUserId } from '~/session.server'
+import { safeRedirect, validateEmail } from '~/utils'
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request)
-  if (userId) return redirect("/")
+  if (userId) return redirect('/')
   return json({})
 }
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData()
-  const email = formData.get("email")
-  const password = formData.get("password")
-  const redirectTo = safeRedirect(formData.get("redirectTo"), "/notes")
-  const remember = formData.get("remember")
+  const email = formData.get('email')
+  const password = formData.get('password')
+  const redirectTo = safeRedirect(formData.get('redirectTo'), '/')
+  const remember = formData.get('remember')
 
   if (!validateEmail(email)) {
     return json(
-      { errors: { email: "Email is invalid", password: null } },
+      { errors: { email: 'Email is invalid', password: null } },
       { status: 400 },
     )
   }
 
-  if (typeof password !== "string" || password.length === 0) {
+  if (typeof password !== 'string' || password.length === 0) {
     return json(
-      { errors: { email: null, password: "Password is required" } },
+      { errors: { email: null, password: 'Password is required' } },
       { status: 400 },
     )
   }
 
   if (password.length < 4) {
     return json(
-      { errors: { email: null, password: "Password is too short" } },
+      { errors: { email: null, password: 'Password is too short' } },
       { status: 400 },
     )
   }
@@ -45,7 +46,7 @@ export async function action({ request }: ActionArgs) {
 
   if (!user) {
     return json(
-      { errors: { email: "Invalid email or password", password: null } },
+      { errors: { email: 'Invalid email or password', password: null } },
       { status: 400 },
     )
   }
@@ -53,20 +54,26 @@ export async function action({ request }: ActionArgs) {
   return createUserSession({
     request,
     userId: user.id,
-    remember: remember === "on" ? true : false,
+    remember: remember === 'on' ? true : false,
     redirectTo,
   })
 }
 
 export const meta: MetaFunction = () => {
   return {
-    title: "Login",
+    title: 'Login',
   }
 }
 
+const labelClasses = clsx('block text-sm font-medium text-gray-700')
+const inputClasses = clsx(
+  'w-full rounded border border-gray-500 px-2 py-1 text-lg',
+)
+const errMsgClasses = clsx('pt-1 text-red-700')
+
 export default function LoginPage() {
   const [searchParams] = useSearchParams()
-  const redirectTo = searchParams.get("redirectTo") || "/"
+  const redirectTo = searchParams.get('redirectTo') || '/'
   const actionData = useActionData<typeof action>()
   const emailRef = React.useRef<HTMLInputElement>(null)
   const passwordRef = React.useRef<HTMLInputElement>(null)
@@ -84,10 +91,7 @@ export default function LoginPage() {
       <div className="mx-auto w-full max-w-md px-8">
         <Form method="post" className="space-y-6">
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="email" className={labelClasses}>
               Email address
             </label>
             <div className="mt-1">
@@ -101,21 +105,16 @@ export default function LoginPage() {
                 autoComplete="email"
                 aria-invalid={actionData?.errors?.email ? true : undefined}
                 aria-describedby="email-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                className={inputClasses}
               />
               {actionData?.errors?.email && (
-                <div className="pt-1 text-red-700" id="email-error">
-                  {actionData.errors.email}
-                </div>
+                <div className={errMsgClasses}>{actionData.errors.email}</div>
               )}
             </div>
           </div>
 
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="password" className={labelClasses}>
               Password
             </label>
             <div className="mt-1">
@@ -127,10 +126,10 @@ export default function LoginPage() {
                 autoComplete="current-password"
                 aria-invalid={actionData?.errors?.password ? true : undefined}
                 aria-describedby="password-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                className={inputClasses}
               />
               {actionData?.errors?.password && (
-                <div className="pt-1 text-red-700" id="password-error">
+                <div className={errMsgClasses}>
                   {actionData.errors.password}
                 </div>
               )}
@@ -160,11 +159,11 @@ export default function LoginPage() {
               </label>
             </div>
             <div className="text-center text-sm text-gray-500">
-              Don't have an account?{" "}
+              Don't have an account?{' '}
               <Link
                 className="text-blue-500 underline"
                 to={{
-                  pathname: "/join",
+                  pathname: '/join',
                   search: searchParams.toString(),
                 }}
               >

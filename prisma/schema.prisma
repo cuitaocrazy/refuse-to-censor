@@ -24,3 +24,45 @@ model Password {
   userId String @unique
 }
 
+model Film {
+  id       String  @id @default(cuid())
+  title    String
+  imdbId   String? @unique
+  path     String? @unique
+  poster   String?
+  year     String?
+  cast     String?
+  director String?
+  plot     String?
+  genre    String?
+}
+
+model Series {
+  id       String   @id @default(cuid())
+  title    String?
+  imdbId   String?  @unique
+  poster   String?
+  year     String?
+  cast     String?
+  director String?
+  plot     String?
+  genre    String?
+  Seasons  Season[]
+}
+
+model Season {
+  id           String    @id @default(cuid())
+  series       Series    @relation(fields: [seriesId], references: [id])
+  seriesId     String
+  seasonNumber Int
+  Episode      Episode[]
+}
+
+model Episode {
+  id            String  @id @default(cuid())
+  season        Season  @relation(fields: [seasonId], references: [id])
+  seasonId      String
+  episodeNumber Int
+  title         String?
+  path          String?
+}
