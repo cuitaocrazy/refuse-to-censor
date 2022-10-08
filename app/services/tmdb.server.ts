@@ -1,12 +1,12 @@
 import { getApiParams } from './imdb_endpoint'
 import type {
   Movie,
-  MovieCredits,
   MovieDetails,
   Person,
+  PersonMovieCredits,
+  PersonTVCredits,
   SearchResults,
   TV,
-  TVCredits,
 } from './tmdb_models'
 
 export async function searchMulti(searchParams: URLSearchParams) {
@@ -85,7 +85,7 @@ export async function getPersonDetails(personId: number): Promise<Person> {
 
 export async function getMovieCreditsByPersonId(
   personId: number,
-): Promise<MovieCredits> {
+): Promise<PersonMovieCredits> {
   const apiParams = getApiParams(
     'person',
     'MovieCredits',
@@ -95,12 +95,12 @@ export async function getMovieCreditsByPersonId(
   const response = await fetch(apiParams.url, { method: apiParams.method })
   const data = await response.json()
 
-  return data.cast
+  return data
 }
 
 export async function getTvCreditsByPersonId(
   personId: number,
-): Promise<TVCredits> {
+): Promise<PersonTVCredits> {
   const apiParams = getApiParams(
     'person',
     'TvCredits',
@@ -110,5 +110,31 @@ export async function getTvCreditsByPersonId(
   const response = await fetch(apiParams.url, { method: apiParams.method })
   const data = await response.json()
 
-  return data.cast
+  return data
+}
+
+export async function getMovieCredits(movieId: number) {
+  const apiParams = getApiParams(
+    'movie',
+    'Credits',
+    new URLSearchParams({ id: movieId.toString(), language: 'zh-CN' }),
+  )
+
+  const response = await fetch(apiParams.url, { method: apiParams.method })
+  const data = await response.json()
+
+  return data
+}
+
+export async function getTvCredits(tvId: number) {
+  const apiParams = getApiParams(
+    'tv',
+    'Credits',
+    new URLSearchParams({ id: tvId.toString(), language: 'zh-CN' }),
+  )
+
+  const response = await fetch(apiParams.url, { method: apiParams.method })
+  const data = await response.json()
+
+  return data
 }

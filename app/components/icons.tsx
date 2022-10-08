@@ -1,16 +1,3 @@
-import { Link } from '@remix-run/react'
-import clsx from 'clsx'
-import React from 'react'
-
-import type { Movie, Person, TV } from '~/services/tmdb_models'
-import { getMediaProp } from '~/services/tmdb_models'
-import { getImageUrl } from '~/utils'
-
-interface SimpleMovieInfoCardProps {
-  item: Movie | TV | Person
-  ctg: 'movie' | 'tv' | 'multi'
-}
-
 function PersonIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -86,75 +73,5 @@ function StarIcon({ className }: { className?: string }) {
     </svg>
   )
 }
-//  rounded-lg transition duration-150 ease-in-out hover:scale-105 hover:shadow-lg
-export default React.forwardRef<HTMLElement, SimpleMovieInfoCardProps>(
-  function SimpleMovieInfoCard({ item, ctg }, ref) {
-    const title: string | undefined =
-      getMediaProp(item, 'title') || getMediaProp(item, 'name')
-    const imagePath: string | undefined = getMediaProp(item, 'poster_path')
-    const itemType = ctg === 'multi' ? item.media_type : ctg
-    const voteAverage: number = getMediaProp(item, 'vote_average') || 0
-    const releaseDate: string | undefined =
-      getMediaProp(item, 'release_date') || getMediaProp(item, 'first_air_date')
-    const adult: boolean = getMediaProp(item, 'adult')
 
-    const icon = React.useMemo(() => {
-      const cls = clsx(
-        'h-8 w-8',
-        'absolute right-2 top-2 rounded-full border-2 bg-gray-400 p-1 bg-opacity-50 text-gray-700',
-        {
-          'border-yellow-300': adult,
-          'border-transparent': !adult,
-        },
-      )
-
-      switch (itemType) {
-        case 'movie':
-          return <MovieIcon className={cls} />
-        case 'tv':
-          return <TVIcon className={cls} />
-        case 'person':
-          return <PersonIcon className={cls} />
-        default:
-          return <MovieIcon className={cls} />
-      }
-    }, [adult, itemType])
-
-    const transitionCls = clsx('transition-all duration-200 ease-in-out')
-
-    return (
-      <Link
-        className={clsx(
-          'group relative w-48 overflow-auto rounded-lg border border-gray-200 focus-within:shadow-lg hover:shadow-lg',
-          transitionCls,
-        )}
-        ref={ref as React.RefObject<HTMLAnchorElement>}
-        to={`/${itemType}/${item.id}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <img
-          className={clsx(
-            'h-72 w-48 object-cover group-hover:brightness-90',
-            transitionCls,
-          )}
-          src={
-            imagePath
-              ? getImageUrl(imagePath, 200)
-              : '/1665px-No-Image-Placeholder.png'
-          }
-          alt={title}
-        />
-        <div className="m-2">
-          <h5 className="text-sm text-gray-900">{title}</h5>
-          <p className="text-xs text-gray-600">{releaseDate}</p>
-          <p className="flex items-center gap-1 text-xs text-gray-600">
-            <StarIcon className="h-4 w-4" />
-            {voteAverage}
-          </p>
-        </div>
-        {icon}
-      </Link>
-    )
-  },
-)
+export { MovieIcon, PersonIcon, StarIcon, TVIcon }

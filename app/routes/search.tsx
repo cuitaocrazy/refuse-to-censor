@@ -3,7 +3,7 @@ import { json } from '@remix-run/node'
 import { useLoaderData, useSearchParams } from '@remix-run/react'
 
 import Grid from '~/components/Grid'
-import SimpleMovieInfoCard from '~/components/SimpleMovieInfoCard'
+import SearchCard from '~/components/SearchCard'
 import useIntersection from '~/hook/useIntersection'
 import useTmdbQuery from '~/hook/useTmdbQuery'
 import { searchMovie, searchMulti } from '~/services/tmdb.server'
@@ -43,14 +43,11 @@ export default function Search() {
   const data = useLoaderData<typeof loader>()
   const [searchParams] = useSearchParams()
   const ctg = getCtg(searchParams.get('ctg'))
-
   const { fetchMore, results, isLoading, hasMore } = useTmdbQuery(data)
-
   const ref = useIntersection(fetchMore, isLoading, hasMore)
-
   const cards = results.map((result, idx) => {
     return (
-      <SimpleMovieInfoCard
+      <SearchCard
         ref={idx === results.length - 1 ? ref : undefined}
         key={result.id}
         ctg={ctg}

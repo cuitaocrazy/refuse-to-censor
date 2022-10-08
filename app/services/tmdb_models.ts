@@ -41,6 +41,7 @@ export type Person = {
   known_for?: (Movie | TV)[]
   name?: string
   popularity?: number
+  known_for_department?: string
 }
 
 export type SearchResults<T> = {
@@ -207,7 +208,7 @@ export type PersonDetails = {
   homepage?: string
 }
 
-export type MovieCredits = {
+export type PersonMovieCredits = {
   cast: {
     character?: string
     credit_id?: string
@@ -247,7 +248,7 @@ export type MovieCredits = {
   id: number
 }
 
-export type TVCredits = {
+export type PersonTVCredits = {
   cast: {
     credit_id?: string
     original_name?: string
@@ -265,6 +266,7 @@ export type TVCredits = {
     backdrop_path?: string
     overview?: string
     origin_country?: string[]
+    adult?: boolean
   }[]
   crew: {
     id: number
@@ -282,6 +284,68 @@ export type TVCredits = {
     vote_average?: number
     poster_path?: string
     credit_id?: string
+    adult?: boolean
+  }[]
+  id: number
+}
+
+export type MovieCredits = {
+  cast: {
+    adult?: boolean
+    gender?: number
+    id: number
+    known_for_department?: string
+    name?: string
+    original_name?: string
+    popularity?: number
+    profile_path?: string
+    cast_id?: number
+    character?: string
+    credit_id?: string
+    order?: number
+  }[]
+  crew: {
+    adult?: boolean
+    gender?: number
+    id: number
+    known_for_department?: string
+    name?: string
+    original_name?: string
+    popularity?: number
+    profile_path?: string
+    credit_id?: string
+    department?: string
+    job?: string
+  }[]
+  id: number
+}
+
+export type TVCredits = {
+  cast: {
+    adult?: boolean
+    gender?: number
+    id: number
+    known_for_department?: string
+    name?: string
+    original_name?: string
+    popularity?: number
+    profile_path?: string
+    character?: string
+    credit_id?: string
+    order?: number
+  }[]
+  crew: {
+    adult?: boolean
+    gender?: number
+    id: number
+    known_for_department?: string
+    name?: string
+    original_name?: string
+    popularity?: number
+    profile_path?: string
+    credit_id?: string
+    department?: string
+    job?: string
   }[]
   id: number
 }
