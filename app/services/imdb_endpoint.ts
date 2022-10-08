@@ -187,7 +187,6 @@ export function getApiParams<
     .replace(':id', id)
     .replace(':personId', personId)
     .replace(':seasonNumber', seasonNumber)
-
   params.set('api_key', tmdb_api_key)
 
   const urlParams = params.toString()

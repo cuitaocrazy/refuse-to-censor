@@ -130,6 +130,8 @@ export default React.forwardRef<HTMLElement, SimpleMovieInfoCardProps>(
         )}
         ref={ref as React.RefObject<HTMLAnchorElement>}
         to={`/${itemType}/${item.id}`}
+        target="_blank"
+        rel="noopener noreferrer"
       >
         <img
           className={clsx(

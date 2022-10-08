@@ -1,5 +1,13 @@
 import { getApiParams } from './imdb_endpoint'
-import type { Movie, Person, SearchResults, TV } from './tmdb_models'
+import type {
+  Movie,
+  MovieCredits,
+  MovieDetails,
+  Person,
+  SearchResults,
+  TV,
+  TVCredits,
+} from './tmdb_models'
 
 export async function searchMulti(searchParams: URLSearchParams) {
   const query = searchParams.get('query')
@@ -34,4 +42,73 @@ async function search<T>(apiParams: {
   const data = await response.json()
 
   return data
+}
+
+export async function getMovieDetails(movieId: number): Promise<MovieDetails> {
+  const apiParams = getApiParams(
+    'movie',
+    'Info',
+    new URLSearchParams({ id: movieId.toString(), language: 'zh-CN' }),
+  )
+
+  const response = await fetch(apiParams.url, { method: apiParams.method })
+  const data = await response.json()
+
+  return data
+}
+
+export async function getTvDetails(tvId: number): Promise<MovieDetails> {
+  const apiParams = getApiParams(
+    'tv',
+    'Info',
+    new URLSearchParams({ id: tvId.toString(), language: 'zh-CN' }),
+  )
+
+  const response = await fetch(apiParams.url, { method: apiParams.method })
+  const data = await response.json()
+
+  return data
+}
+
+export async function getPersonDetails(personId: number): Promise<Person> {
+  const apiParams = getApiParams(
+    'person',
+    'Info',
+    new URLSearchParams({ person_id: personId.toString(), language: 'zh-CN' }),
+  )
+
+  const response = await fetch(apiParams.url, { method: apiParams.method })
+  const data = await response.json()
+
+  return data
+}
+
+export async function getMovieCreditsByPersonId(
+  personId: number,
+): Promise<MovieCredits> {
+  const apiParams = getApiParams(
+    'person',
+    'MovieCredits',
+    new URLSearchParams({ person_id: personId.toString(), language: 'zh-CN' }),
+  )
+
+  const response = await fetch(apiParams.url, { method: apiParams.method })
+  const data = await response.json()
+
+  return data.cast
+}
+
+export async function getTvCreditsByPersonId(
+  personId: number,
+): Promise<TVCredits> {
+  const apiParams = getApiParams(
+    'person',
+    'TvCredits',
+    new URLSearchParams({ person_id: personId.toString(), language: 'zh-CN' }),
+  )
+
+  const response = await fetch(apiParams.url, { method: apiParams.method })
+  const data = await response.json()
+
+  return data.cast
 }
