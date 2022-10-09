@@ -1,6 +1,6 @@
 import type { LoaderArgs, MetaFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
-import { useLoaderData, useSearchParams } from '@remix-run/react'
+import { useSearchParams } from '@remix-run/react'
 
 import Grid from '~/components/Grid'
 import SearchCard from '~/components/SearchCard'
