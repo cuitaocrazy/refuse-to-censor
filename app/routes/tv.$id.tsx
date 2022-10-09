@@ -5,29 +5,48 @@ import { json } from '@remix-run/server-runtime'
 import Grid from '~/components/Grid'
 import LinkCard from '~/components/LinkCard'
 import { getTvCredits, getTvDetails } from '~/services/tmdb.server'
-import type { TVCredits, TVDetails } from '~/services/tmdb_models'
 import { getImageUrl } from '~/utils'
 
-type LoaderData = {
-  tv: TVDetails
-  credits: TVCredits
-}
 export async function loader({ params }: LoaderArgs) {
   const { id } = params
   const numberId = Number(id)
 
   if (isNaN(numberId)) {
-    return json({ error: 'id error' }, { status: 404 })
+    throw json({ error: 'id error' }, { status: 404 })
   }
 
-  const tv = await getTvDetails(numberId)
-  const credits = await getTvCredits(numberId)
+  const [tv, credits] = await Promise.all([
+    getTvDetails(numberId),
+    getTvCredits(numberId),
+  ])
+
+  credits.cast = credits.cast.reduce((s, e) => {
+    const f = s.find((v) => v.id === e.id)
+
+    if (f) {
+      f.character += ` / ${e.character}`
+    } else {
+      s.push(e)
+    }
+    return s
+  }, [] as typeof credits.cast)
+
+  credits.crew = credits.crew.reduce((s, e) => {
+    const f = s.find((v) => v.id === e.id)
+
+    if (f) {
+      f.job += ` / ${e.job}`
+    } else {
+      s.push(e)
+    }
+    return s
+  }, [] as typeof credits.crew)
 
   return json({ tv, credits })
 }
 
 export default function TV() {
-  const data = useLoaderData<LoaderData>()
+  const data = useLoaderData<typeof loader>()
   return (
     <div>
       <img src={getImageUrl(data.tv.poster_path, 200)} alt={data.tv.name}></img>
@@ -71,7 +90,6 @@ export default function TV() {
             >
               <div className="m-2">
                 <h5 className="text-sm text-gray-900">{crew.name}</h5>
-                <p className="text-xs text-gray-600">{crew.department}</p>
                 <p className="text-xs text-gray-600">{crew.job}</p>
               </div>
             </LinkCard>

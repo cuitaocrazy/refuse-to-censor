@@ -5,30 +5,48 @@ import { useLoaderData } from '@remix-run/react'
 import Grid from '~/components/Grid'
 import LinkCard from '~/components/LinkCard'
 import { getMovieCredits, getMovieDetails } from '~/services/tmdb.server'
-import type { MovieCredits, MovieDetails } from '~/services/tmdb_models'
 import { getImageUrl } from '~/utils'
-
-type LoaderData = {
-  movie: MovieDetails
-  credits: MovieCredits
-}
 
 export async function loader({ params }: LoaderArgs) {
   const { id } = params
   const numberId = Number(id)
 
   if (isNaN(numberId)) {
-    return json({ error: 'id error' }, { status: 404 })
+    throw json({ error: 'id error' }, { status: 404 })
   }
 
-  const movie = await getMovieDetails(numberId)
-  const credits = await getMovieCredits(numberId)
+  const [movie, credits] = await Promise.all([
+    getMovieDetails(numberId),
+    getMovieCredits(numberId),
+  ])
+
+  credits.cast = credits.cast.reduce((s, e) => {
+    const f = s.find((v) => v.id === e.id)
+
+    if (f) {
+      f.character += ` / ${e.character}`
+    } else {
+      s.push(e)
+    }
+    return s
+  }, [] as typeof credits.cast)
+
+  credits.crew = credits.crew.reduce((s, e) => {
+    const f = s.find((v) => v.id === e.id)
+
+    if (f) {
+      f.job += ` / ${e.job}`
+    } else {
+      s.push(e)
+    }
+    return s
+  }, [] as typeof credits.crew)
 
   return json({ movie, credits })
 }
 
 export default function Movie() {
-  const data = useLoaderData<LoaderData>()
+  const data = useLoaderData<typeof loader>()
   return (
     <div>
       <img
@@ -77,7 +95,6 @@ export default function Movie() {
             >
               <div className="m-2">
                 <h5 className="text-sm text-gray-900">{crew.name}</h5>
-                <p className="text-xs text-gray-600">{crew.department}</p>
                 <p className="text-xs text-gray-600">{crew.job}</p>
               </div>
             </LinkCard>

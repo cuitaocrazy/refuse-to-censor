@@ -10,30 +10,65 @@ import {
   getPersonDetails,
   getTvCreditsByPersonId,
 } from '~/services/tmdb.server'
-import type {
-  PersonDetails,
-  PersonMovieCredits,
-  PersonTVCredits,
-} from '~/services/tmdb_models'
 import { getImageUrl } from '~/utils'
-
-type LoaderData = {
-  person: PersonDetails
-  movieCredits: PersonMovieCredits
-  tvCredits: PersonTVCredits
-}
 
 export async function loader({ params }: LoaderArgs) {
   const { id } = params
   const numberId = Number(id)
 
   if (isNaN(numberId)) {
-    return json({ error: 'id error' }, { status: 404 })
+    throw json({ error: 'id error' }, { status: 404 })
   }
 
-  const person = await getPersonDetails(numberId)
-  const movieCredits = await getMovieCreditsByPersonId(numberId)
-  const tvCredits = await getTvCreditsByPersonId(numberId)
+  const [person, movieCredits, tvCredits] = await Promise.all([
+    getPersonDetails(numberId),
+    getMovieCreditsByPersonId(numberId),
+    getTvCreditsByPersonId(numberId),
+  ])
+
+  movieCredits.cast = movieCredits.cast.reduce((s, e) => {
+    const f = s.find((v) => v.id === e.id)
+
+    if (f) {
+      f.character += ` / ${e.character}`
+    } else {
+      s.push(e)
+    }
+    return s
+  }, [] as typeof movieCredits.cast)
+
+  movieCredits.crew = movieCredits.crew.reduce((s, e) => {
+    const f = s.find((v) => v.id === e.id)
+
+    if (f) {
+      f.job += ` / ${e.job}`
+    } else {
+      s.push(e)
+    }
+    return s
+  }, [] as typeof movieCredits.crew)
+
+  tvCredits.cast = tvCredits.cast.reduce((s, e) => {
+    const f = s.find((v) => v.id === e.id)
+
+    if (f) {
+      f.character += ` / ${e.character}`
+    } else {
+      s.push(e)
+    }
+    return s
+  }, [] as typeof tvCredits.cast)
+
+  tvCredits.crew = tvCredits.crew.reduce((s, e) => {
+    const f = s.find((v) => v.id === e.id)
+
+    if (f) {
+      f.job += ` / ${e.job}`
+    } else {
+      s.push(e)
+    }
+    return s
+  }, [] as typeof tvCredits.crew)
 
   return json({
     person,
@@ -43,7 +78,7 @@ export async function loader({ params }: LoaderArgs) {
 }
 
 export default function Person() {
-  const data = useLoaderData<LoaderData>()
+  const data = useLoaderData<typeof loader>()
 
   return (
     <div>
@@ -102,7 +137,6 @@ export default function Person() {
                   <StarIcon className="h-4 w-4" />
                   {movie.vote_average}
                 </p>
-                <p className="text-xs text-gray-600">{movie.department}</p>
                 <p className="text-xs text-gray-600">{movie.job}</p>
               </div>
             </LinkCard>
@@ -154,7 +188,6 @@ export default function Person() {
                   <StarIcon className="h-4 w-4" />
                   {tv.vote_average}
                 </p>
-                <p className="text-xs text-gray-600">{tv.department}</p>
                 <p className="text-xs text-gray-600">{tv.job}</p>
               </div>
             </LinkCard>

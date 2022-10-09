@@ -1,14 +1,23 @@
-import { Form, useSearchParams } from '@remix-run/react'
-
+import { Form, useSearchParams, useTransition } from '@remix-run/react'
+import clsx from 'clsx'
 export default function Top() {
   const [searchParams] = useSearchParams()
   const searchKeyWord = searchParams.get('query') || ''
   const ctg = searchParams.get('ctg') || undefined
   const language = searchParams.get('language') || undefined
   const includeAdult = searchParams.get('include_adult') === 'true'
+  const { state } = useTransition()
 
   return (
     <div>
+      <div className="w-full">
+        <div
+          className={clsx('h-[2px] w-0 bg-indigo-400', {
+            'load-req-at': state !== 'idle',
+            'load-res-at': state === 'idle',
+          })}
+        ></div>
+      </div>
       <Form action="/search">
         <select name="language" defaultValue={language}>
           <option value="zh-CN">zh-CN</option>

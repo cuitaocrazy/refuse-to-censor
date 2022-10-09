@@ -1,12 +1,16 @@
 import { getApiParams } from './imdb_endpoint'
 import type {
   Movie,
+  MovieCredits,
   MovieDetails,
   Person,
+  PersonDetails,
   PersonMovieCredits,
   PersonTVCredits,
   SearchResults,
   TV,
+  TVCredits,
+  TVDetails,
 } from './tmdb_models'
 
 export async function searchMulti(searchParams: URLSearchParams) {
@@ -57,7 +61,7 @@ export async function getMovieDetails(movieId: number): Promise<MovieDetails> {
   return data
 }
 
-export async function getTvDetails(tvId: number): Promise<MovieDetails> {
+export async function getTvDetails(tvId: number): Promise<TVDetails> {
   const apiParams = getApiParams(
     'tv',
     'Info',
@@ -70,7 +74,9 @@ export async function getTvDetails(tvId: number): Promise<MovieDetails> {
   return data
 }
 
-export async function getPersonDetails(personId: number): Promise<Person> {
+export async function getPersonDetails(
+  personId: number,
+): Promise<PersonDetails> {
   const apiParams = getApiParams(
     'person',
     'Info',
@@ -113,7 +119,7 @@ export async function getTvCreditsByPersonId(
   return data
 }
 
-export async function getMovieCredits(movieId: number) {
+export async function getMovieCredits(movieId: number): Promise<MovieCredits> {
   const apiParams = getApiParams(
     'movie',
     'Credits',
@@ -126,7 +132,7 @@ export async function getMovieCredits(movieId: number) {
   return data
 }
 
-export async function getTvCredits(tvId: number) {
+export async function getTvCredits(tvId: number): Promise<TVCredits> {
   const apiParams = getApiParams(
     'tv',
     'Credits',
