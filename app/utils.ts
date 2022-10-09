@@ -1,6 +1,5 @@
 import { useMatches } from '@remix-run/react'
 import { useMemo } from 'react'
-import { T } from 'vitest/dist/global-e98f203b'
 
 import type { User } from '~/models/user.server'
 
@@ -98,15 +97,17 @@ export const genres = {
   37: '西部',
 }
 
-// export function aggObj<T extends {id: number}, K extends keyof T>(arr: T[], key: K):  {
-//   return arr.reduce((acc, cur) => {
-//     const f = acc.find((item) => item.id === cur.id)
-
-//     if (f) {
-//       f[key] =  (f[key]) + ' / ' + (cur[key])
-//     } else {
-//       acc.push(cur)
-//     }
-//     return acc
-//   }, [] as T[])
-// }
+export function aggObj<T extends { id: number }, K extends keyof T>(
+  arr: T[],
+  key: K,
+) {
+  return arr.reduce((acc, cur) => {
+    const f = acc.find((item) => item.id === cur.id)
+    if (f) {
+      f[key] = (f[key] + ' / ' + cur[key]) as T[K]
+    } else {
+      acc.push(cur)
+    }
+    return acc
+  }, [] as T[])
+}

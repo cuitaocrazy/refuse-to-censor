@@ -1,10 +1,11 @@
-import { useFetcher, useSearchParams } from '@remix-run/react'
+import { useFetcher, useLoaderData, useSearchParams } from '@remix-run/react'
 import { useCallback, useRef, useState } from 'react'
 import { useEffect } from 'react'
 
 import type { SearchResults } from '~/services/tmdb_models'
 
-function useTmdbQuery<T extends { id: number }>(initResults: SearchResults<T>) {
+function useTmdbQuery<T extends { id: number }>() {
+  const initResults = useLoaderData() as SearchResults<T>
   const [searchParams] = useSearchParams()
   const [results, setResults] = useState(initResults)
   const { load, data, type } = useFetcher<SearchResults<T>>()

@@ -40,10 +40,11 @@ export const meta: MetaFunction = () => {
 }
 
 export default function Search() {
-  const data = useLoaderData<typeof loader>()
   const [searchParams] = useSearchParams()
   const ctg = getCtg(searchParams.get('ctg'))
-  const { fetchMore, results, isLoading, hasMore } = useTmdbQuery(data)
+  const { fetchMore, results, isLoading, hasMore } = useTmdbQuery<
+    TV | Movie | Person
+  >()
   const ref = useIntersection(fetchMore, isLoading, hasMore)
   const cards = results.map((result, idx) => {
     return (

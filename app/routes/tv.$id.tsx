@@ -5,7 +5,7 @@ import { json } from '@remix-run/server-runtime'
 import Grid from '~/components/Grid'
 import LinkCard from '~/components/LinkCard'
 import { getTvCredits, getTvDetails } from '~/services/tmdb.server'
-import { getImageUrl } from '~/utils'
+import { aggObj, getImageUrl } from '~/utils'
 
 export async function loader({ params }: LoaderArgs) {
   const { id } = params
@@ -20,27 +20,8 @@ export async function loader({ params }: LoaderArgs) {
     getTvCredits(numberId),
   ])
 
-  credits.cast = credits.cast.reduce((s, e) => {
-    const f = s.find((v) => v.id === e.id)
-
-    if (f) {
-      f.character += ` / ${e.character}`
-    } else {
-      s.push(e)
-    }
-    return s
-  }, [] as typeof credits.cast)
-
-  credits.crew = credits.crew.reduce((s, e) => {
-    const f = s.find((v) => v.id === e.id)
-
-    if (f) {
-      f.job += ` / ${e.job}`
-    } else {
-      s.push(e)
-    }
-    return s
-  }, [] as typeof credits.crew)
+  credits.cast = aggObj(credits.cast, 'character')
+  credits.crew = aggObj(credits.crew, 'job')
 
   return json({ tv, credits })
 }
@@ -57,19 +38,21 @@ export default function TV() {
       <p>{data.tv.first_air_date}</p>
       <p>{data.tv.vote_average}</p>
       <p>参演</p>
-      <Grid>
+      <Grid min={96}>
         {data.credits.cast.map((cast) => {
           return (
             <LinkCard
               id={cast.id}
               key={cast.id}
               alt={cast.name || ''}
-              img={getImageUrl(cast.profile_path, 200)}
+              img={getImageUrl(cast.profile_path, 92)}
               adult={cast.adult || false}
               type="person"
+              cardWidth="w-24"
+              imgHeight="h-32"
             >
-              <div className="m-2">
-                <h5 className="text-sm text-gray-900">{cast.name}</h5>
+              <div className="m-1">
+                <h5 className="text-xs text-gray-900">{cast.name}</h5>
                 <p className="text-xs text-gray-600">{cast.character}</p>
               </div>
             </LinkCard>
@@ -77,16 +60,18 @@ export default function TV() {
         })}
       </Grid>
       <p>剧组</p>
-      <Grid>
+      <Grid min={96}>
         {data.credits.crew.map((crew) => {
           return (
             <LinkCard
               id={crew.id}
               key={crew.id}
               alt={crew.name || ''}
-              img={getImageUrl(crew.profile_path, 200)}
+              img={getImageUrl(crew.profile_path, 92)}
               adult={crew.adult || false}
               type="person"
+              cardWidth="w-24"
+              imgHeight="h-32"
             >
               <div className="m-2">
                 <h5 className="text-sm text-gray-900">{crew.name}</h5>

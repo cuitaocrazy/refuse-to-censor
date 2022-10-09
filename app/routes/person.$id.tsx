@@ -10,7 +10,7 @@ import {
   getPersonDetails,
   getTvCreditsByPersonId,
 } from '~/services/tmdb.server'
-import { getImageUrl } from '~/utils'
+import { aggObj, getImageUrl } from '~/utils'
 
 export async function loader({ params }: LoaderArgs) {
   const { id } = params
@@ -26,49 +26,10 @@ export async function loader({ params }: LoaderArgs) {
     getTvCreditsByPersonId(numberId),
   ])
 
-  movieCredits.cast = movieCredits.cast.reduce((s, e) => {
-    const f = s.find((v) => v.id === e.id)
-
-    if (f) {
-      f.character += ` / ${e.character}`
-    } else {
-      s.push(e)
-    }
-    return s
-  }, [] as typeof movieCredits.cast)
-
-  movieCredits.crew = movieCredits.crew.reduce((s, e) => {
-    const f = s.find((v) => v.id === e.id)
-
-    if (f) {
-      f.job += ` / ${e.job}`
-    } else {
-      s.push(e)
-    }
-    return s
-  }, [] as typeof movieCredits.crew)
-
-  tvCredits.cast = tvCredits.cast.reduce((s, e) => {
-    const f = s.find((v) => v.id === e.id)
-
-    if (f) {
-      f.character += ` / ${e.character}`
-    } else {
-      s.push(e)
-    }
-    return s
-  }, [] as typeof tvCredits.cast)
-
-  tvCredits.crew = tvCredits.crew.reduce((s, e) => {
-    const f = s.find((v) => v.id === e.id)
-
-    if (f) {
-      f.job += ` / ${e.job}`
-    } else {
-      s.push(e)
-    }
-    return s
-  }, [] as typeof tvCredits.crew)
+  movieCredits.cast = aggObj(movieCredits.cast, 'character')
+  movieCredits.crew = aggObj(movieCredits.crew, 'job')
+  tvCredits.cast = aggObj(tvCredits.cast, 'character')
+  tvCredits.crew = aggObj(tvCredits.crew, 'job')
 
   return json({
     person,
