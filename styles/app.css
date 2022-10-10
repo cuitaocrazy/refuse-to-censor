@@ -9,7 +9,7 @@
 }
 
 .load-req-at {
-  animation-duration: 1s;
+  animation-duration: 0.5s;
   animation-name: req;
   animation-fill-mode: forwards;
 }

@@ -1,4 +1,9 @@
-import { Form, useSearchParams, useTransition } from '@remix-run/react'
+import {
+  Form,
+  useFetchers,
+  useSearchParams,
+  useTransition,
+} from '@remix-run/react'
 import clsx from 'clsx'
 export default function Top() {
   const [searchParams] = useSearchParams()
@@ -7,14 +12,24 @@ export default function Top() {
   const language = searchParams.get('language') || undefined
   const includeAdult = searchParams.get('include_adult') === 'true'
   const { state } = useTransition()
+  const fetchers = useFetchers()
+  let isIdle = state === 'idle'
+  if (isIdle) {
+    for (const f of fetchers) {
+      if (f.state !== 'idle') {
+        isIdle = false
+        break
+      }
+    }
+  }
 
   return (
     <div>
       <div className="w-full">
         <div
           className={clsx('h-[2px] w-0 bg-indigo-400', {
-            'load-req-at': state !== 'idle',
-            'load-res-at': state === 'idle',
+            'load-req-at': !isIdle,
+            'load-res-at': isIdle,
           })}
         ></div>
       </div>

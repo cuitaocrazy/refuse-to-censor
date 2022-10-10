@@ -1,4 +1,9 @@
-import { useFetcher, useLoaderData, useSearchParams } from '@remix-run/react'
+import {
+  useBeforeUnload,
+  useFetcher,
+  useLoaderData,
+  useSearchParams,
+} from '@remix-run/react'
 import { useCallback, useRef, useState } from 'react'
 import { useEffect } from 'react'
 
@@ -16,6 +21,9 @@ function useTmdbQuery<T extends { id: number }>() {
     type === 'normalLoad' ||
     (resultRef.current !== initResults && resultRef.current.page !== data?.page)
 
+  useBeforeUnload(() => {
+    console.log('unloading')
+  })
   useEffect(() => {
     resultRef.current = initResults
     setRef.current = new Set(initResults.results.map((r) => r.id))

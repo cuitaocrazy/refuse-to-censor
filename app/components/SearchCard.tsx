@@ -32,7 +32,7 @@ export default React.forwardRef<HTMLElement, SearchCard>(
         type={itemType}
         img={getImageUrl(imagePath, 200)}
         id={item.id}
-        newTag={true}
+        // newTag={true}
       >
         <div className="m-2">
           <h5 className="text-sm text-gray-900">{title}</h5>
