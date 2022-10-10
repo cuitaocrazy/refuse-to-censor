@@ -63,7 +63,7 @@ function Card(
           imgHeight,
           transitionCls,
         )}
-        src={img || '/1665px-No-Image-Placeholder.png'}
+        src={img}
         alt={alt}
       />
       {children}

@@ -21,6 +21,7 @@ export async function loader({ params }: LoaderArgs) {
   ])
 
   credits.cast = aggObj(credits.cast, 'character')
+  credits.crew = credits.crew.filter((item) => item.job === 'Director')
   credits.crew = aggObj(credits.crew, 'job')
 
   return json({ tv, credits })

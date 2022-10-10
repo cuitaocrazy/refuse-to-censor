@@ -9,6 +9,7 @@ import { useEffect } from 'react'
 
 import type { SearchResults } from '~/services/tmdb_models'
 
+// 不是最佳实践，放弃使用
 function useTmdbQuery<T extends { id: number }>() {
   const initResults = useLoaderData() as SearchResults<T>
   const [searchParams] = useSearchParams()

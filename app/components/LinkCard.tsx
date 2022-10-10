@@ -13,6 +13,7 @@ type LinkCardProps = {
   imgHeight?: string
   newTag?: boolean
   id: number
+  prefetch?: boolean
 }
 
 function LinkCard(
@@ -26,6 +27,7 @@ function LinkCard(
     imgHeight,
     newTag = false,
     id,
+    prefetch = false,
   }: LinkCardProps,
   ref: React.ForwardedRef<HTMLElement>,
 ) {
@@ -35,6 +37,7 @@ function LinkCard(
       to={`/${type}/${id}`}
       target={newTag ? '_blank' : undefined}
       rel={newTag ? 'noopener noreferrer' : undefined}
+      prefetch={prefetch ? 'intent' : 'none'}
     >
       <Card
         img={img}

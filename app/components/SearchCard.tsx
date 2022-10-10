@@ -30,8 +30,9 @@ export default React.forwardRef<HTMLElement, SearchCard>(
         alt={title}
         adult={adult}
         type={itemType}
-        img={getImageUrl(imagePath, 200)}
+        img={getImageUrl(imagePath, 185)}
         id={item.id}
+        prefetch
         // newTag={true}
       >
         <div className="m-2">

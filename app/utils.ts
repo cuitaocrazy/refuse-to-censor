@@ -71,7 +71,7 @@ export function validateEmail(email: unknown): email is string {
 }
 
 export function getImageUrl(path: string | undefined, width: number): string {
-  if (!path) return ''
+  if (!path) return '/1665px-No-Image-Placeholder.png'
   return `https://image.tmdb.org/t/p/w${width}${path}`
 }
 
