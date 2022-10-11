@@ -1,0 +1,49 @@
+POST /api/v2/torrents/add HTTP/1.1
+accept: */*
+accept-encoding: gzip, deflate, br
+connection: close
+content-length: 436
+content-type: multipart/form-data; boundary=----5590942325020474076137944786
+cookie: SID=u1xAyE0vnNYXV4lsInCPDLsjCkqJ/TK7; HttpOnly; path=/; SameSite=Strict
+user-agent: node-fetch
+Host: localhost:8080
+
+------5590942325020474076137944786
+Content-Disposition: form-data; name="urls"
+
+magnet:?xt=urn:btih:F40C5F058238E6D8534711D802FE1FF155641725&dn=Bullet%20Train%20(2022)%20[1080p]%20[WEBRip]%20[5.1]
+------5590942325020474076137944786
+Content-Disposition: form-data; name="savepath"
+
+/downloads/test
+------5590942325020474076137944786
+Content-Disposition: form-data; name="category"
+
+movies
+------5590942325020474076137944786--
+
+POST /api/v2/torrents/add HTTP/1.1
+host: localhost:8080
+connection: keep-alive
+cookie: SID=AuFoTGnkIDtelbJRTxVTvxl6TGxI0Upi; HttpOnly; path=/; SameSite=Strict
+content-type: multipart/form-data; boundary=----formdata-undici-0.26713015356688774
+accept: */*
+accept-language: *
+sec-fetch-mode: cors
+user-agent: undici
+accept-encoding: gzip, deflate
+transfer-encoding: chunked
+
+------formdata-undici-0.26713015356688774
+Content-Disposition: form-data; name="urls"
+
+magnet:?xt=urn:btih:F40C5F058238E6D8534711D802FE1FF155641725&dn=Bullet%20Train%20(2022)%20[1080p]%20[WEBRip]%20[5.1]
+------formdata-undici-0.26713015356688774
+Content-Disposition: form-data; name="savepath"
+
+/downloads/test
+------formdata-undici-0.26713015356688774
+Content-Disposition: form-data; name="category"
+
+movies
+------formdata-undici-0.26713015356688774--
