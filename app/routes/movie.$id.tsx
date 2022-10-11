@@ -1,11 +1,13 @@
 import type { LoaderArgs } from '@remix-run/node'
 import { json } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
+import { useFetcher, useLoaderData } from '@remix-run/react'
 
 import Grid from '~/components/Grid'
 import LinkCard from '~/components/LinkCard'
 import { getMovieCredits, getMovieDetails } from '~/services/tmdb.server'
 import { aggObj, getImageUrl } from '~/utils'
+
+import type { TPBQueryItem } from './magnet.search'
 
 export async function loader({ params }: LoaderArgs) {
   const { id } = params
@@ -29,6 +31,8 @@ export async function loader({ params }: LoaderArgs) {
 
 export default function Movie() {
   const data = useLoaderData<typeof loader>()
+  const magnetFetch = useFetcher<TPBQueryItem[]>()
+  const downloadHandler = async (magnetLink: string) => {}
   return (
     <div>
       <img
@@ -43,6 +47,48 @@ export default function Movie() {
       <p>{data.movie.overview}</p>
       <p>{data.movie.release_date}</p>
       <p>{data.movie.vote_average}</p>
+      <div>
+        <p>bt search</p>
+        <magnetFetch.Form action="/magnet/search">
+          <input
+            type="text"
+            name="query"
+            defaultValue={data.movie.imdb_id || data.movie.original_title}
+          />
+          <button type="submit">search</button>
+        </magnetFetch.Form>
+        <table>
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>大小</th>
+              <th>种子数</th>
+              <th>文件个数</th>
+              <th>Magnet</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {magnetFetch.data &&
+              magnetFetch.data.map((item) => {
+                return (
+                  <tr key={item.id}>
+                    <td>{item.name}</td>
+                    <td>{item.size}</td>
+                    <td>{item.seeders}</td>
+                    <td>{item.num_files}</td>
+                    <td>
+                      <a href={item.magnet_link}>magnet</a>
+                    </td>
+                    <button onClick={() => downloadHandler(item.magnet_link)}>
+                      download
+                    </button>
+                  </tr>
+                )
+              })}
+          </tbody>
+        </table>
+      </div>
       <p>参演</p>
       <Grid min={96}>
         {data.credits.cast.map((cast) => {

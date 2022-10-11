@@ -1,5 +1,7 @@
 import type { LoaderArgs } from '@remix-run/server-runtime'
 
+import { generateMagnetLink, getSizeDisplay } from '~/utils'
+
 function getCategoryName(category: string) {
   if (category === '0') {
     return ''
@@ -164,19 +166,6 @@ function getCategoryName(category: string) {
   return main + ' > ' + sub
 }
 
-function getSizeDisplay(size: number) {
-  if (size < 1024) {
-    return size + ' B'
-  }
-  if (size < 1024 * 1024) {
-    return (size / 1024).toFixed(2) + ' KB'
-  }
-  if (size < 1024 * 1024 * 1024) {
-    return (size / 1024 / 1024).toFixed(2) + ' MB'
-  }
-  return (size / 1024 / 1024 / 1024).toFixed(2) + ' GB'
-}
-
 export type TPBQueryItem = {
   id: string
   name: string
@@ -190,6 +179,7 @@ export type TPBQueryItem = {
   status: string
   category: string
   imdb: string
+  magnet_link: string
 }
 
 export async function loader({ request }: LoaderArgs) {
@@ -199,16 +189,19 @@ export async function loader({ request }: LoaderArgs) {
     const results: TPBQueryItem[] = await fetch(
       `https://apibay.org/q.php?q=${query}&cat=0`,
     ).then((res) => res.json())
-    console.log(results.map((res) => getCategoryName(res.category)))
+
     return results.map((res) => ({
       id: res.id,
       name: res.name,
       info_hash: res.info_hash,
       leechers: res.leechers,
       seeders: res.seeders,
+      num_files: res.num_files,
+      imdb: res.imdb,
       category: getCategoryName(res.category),
       added: new Date(+res.added * 1000).toLocaleString(),
       size: getSizeDisplay(+res.size),
+      magnet_link: generateMagnetLink(res.info_hash, res.name),
     }))
   }
   return { message: 'Hello World' }

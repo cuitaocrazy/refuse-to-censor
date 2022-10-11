@@ -111,3 +111,25 @@ export function aggObj<T extends { id: number }, K extends keyof T>(
     return acc
   }, [] as T[])
 }
+
+export function getSizeDisplay(size: number) {
+  if (size < 1024) {
+    return size + ' B'
+  }
+  if (size < 1024 * 1024) {
+    return (size / 1024).toFixed(2) + ' KB'
+  }
+  if (size < 1024 * 1024 * 1024) {
+    return (size / 1024 / 1024).toFixed(2) + ' MB'
+  }
+  return (size / 1024 / 1024 / 1024).toFixed(2) + ' GB'
+}
+
+export function generateMagnetLink(
+  hash: string,
+  name: string,
+  trackers: string[] = [],
+) {
+  const trackersStr = trackers.map((tracker) => `&tr=${tracker}`).join('')
+  return `magnet:?xt=urn:btih:${hash}&dn=${name}${trackersStr}`
+}

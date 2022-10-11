@@ -144,3 +144,16 @@ export async function getTvCredits(tvId: number): Promise<TVCredits> {
 
   return data
 }
+
+export async function getTvExtenalIds(tvId: number): Promise<any> {
+  const apiParams = getApiParams(
+    'tv',
+    'ExternalIds',
+    new URLSearchParams({ id: tvId.toString() }),
+  )
+
+  const response = await fetch(apiParams.url, { method: apiParams.method })
+  const data = await response.json()
+
+  return data
+}
