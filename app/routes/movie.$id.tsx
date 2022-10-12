@@ -32,7 +32,13 @@ export async function loader({ params }: LoaderArgs) {
 export default function Movie() {
   const data = useLoaderData<typeof loader>()
   const magnetFetch = useFetcher<TPBQueryItem[]>()
-  const downloadHandler = async (magnetLink: string) => {}
+  const downloadFetch = useFetcher()
+  const downloadHandler = async (magnetLink: string) => {
+    downloadFetch.submit(
+      { magnet: magnetLink },
+      { method: 'get', action: '/download' },
+    )
+  }
   return (
     <div>
       <img
